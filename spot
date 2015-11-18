@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ $@ != 1 ]]
+if [[ $# != 1 ]]
 then
 	printf "Usage\n\tspot <URL>\n"
 	printf "\nExample\n\thttp://open.spotify.com/user/1248318865/playlist/7uKPSEwUQzx3c9EU032lU6\n"
