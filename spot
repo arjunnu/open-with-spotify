@@ -1,0 +1,22 @@
+#!/bin/bash
+if [[ $@ != 1 ]]
+then
+	printf "Usage\n\tspot <URL>\n"
+	printf "\nExample\n\thttp://open.spotify.com/user/1248318865/playlist/7uKPSEwUQzx3c9EU032lU6\n"
+	exit 0
+fi
+
+HSH=`echo $1 | sed 's/http:\/\/open.spotify.com/spotify/'`
+FINSTR=`echo $HSH | sed 's/\//:/g'`
+osascript<<EOF
+tell application "spotify" to activate
+tell application "System Events"
+ keystroke "l" using command down
+ keystroke "a" using command down
+ keystroke ascii character 8
+ delay 0.1
+ keystroke "$FINSTR"
+ keystroke return
+end tell
+
+EOF
