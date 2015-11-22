@@ -72,8 +72,6 @@ matches() {
     echo "$input" | grep -q "$pattern"
 }
 
-osascript -e "display dialog "\$pbpaste\""
-osascript -e "display dialog "\$input\""
 if matches $input $keyword
 then
         url=$input
@@ -81,7 +79,7 @@ elif matches $pbpaste $keyword
 then
         url=$pbpaste
 else
-        osascript -e "display dialog \"Spotify url not found. \nPlease Copy Link Address and proceed for hyperlinks.\""
+        osascript -e "display dialog \"Spotify url not found. \nFor hyperlinks, please Copy Link Address and then proceed.\""
 		exit 0;
 fi
 
