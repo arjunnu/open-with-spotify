@@ -6,8 +6,50 @@ then
 	exit 0
 fi
 
-HSH=`echo $1 | sed 's/http:\/\/open.spotify.com/spotify/'`
-FINSTR=`echo $HSH | sed 's/\//:/g'`
+input=$1
+keyword=spotify
+schemedurl=
+url=
+
+matches() {
+    input="$1"
+    pattern="$2"
+    echo "$input" | grep -q "$pattern"
+}
+
+if matches $input $keyword
+then
+        url=$input
+else
+        echo "$1 is not a valid spotify url" 
+	exit 0;
+fi
+
+IFS='\/ ' read -r -a array <<< "$url";
+i=0;
+foundCom=0;
+arrLen=${#array[@]}
+word=com
+while [ $i != $arrLen ]
+do
+        if [ "${array[$i]#*$word}" != "${array[$i]}" ]
+        then
+                foundCom=1;
+                i=`expr $i + 1`;
+        fi
+        if [ $foundCom -eq 0 ]
+        then
+                #echo "display dialog \"Not printing ${array[i]}\"";
+                i=`expr $i + 1`;
+                continue;
+        else
+                schemedurl="$schemedurl:${array[$i]}"
+                #echo "display dialog \"Printing ${array[i]}\"";
+                i=`expr $i + 1`;
+        fi
+done
+FINSTR=spotify$schemedurl
+
 osascript<<EOF
 tell application "spotify" to activate
 tell application "System Events"
