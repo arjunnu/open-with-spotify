@@ -4,13 +4,13 @@
 # set -x
 
 # display help if incorrect usage or on --help
-if [[ $1 == "--help" ]]
+if [[ ($# == 0) || ($1 == "--help") ]]
 then
-	  printf "Usage\n\tspot <spotify web url OR search string>\n\tspot --help to see this help text\n"
-	  printf "\nExamples\n\tspot http://open.spotify.com/user/1248318865/playlist/7uKPSEwUQzx3c9EU032lU6\n"
+    printf "Usage\n\tspot <spotify web url OR search string>\n\tspot --help to see this help text\n"
+    printf "\nExamples\n\tspot http://open.spotify.com/user/1248318865/playlist/7uKPSEwUQzx3c9EU032lU6\n"
     printf "\tspot breaking benjamin\n"
     printf "\tspot --help\n"
-	  exit 0
+    exit 0
 fi
 
 # meat of the script
