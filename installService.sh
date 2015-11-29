@@ -1,2 +1,2 @@
 #!/bin/bash
-cp -r Open\ with\ Spotify\ \(copy\ link\ address\ for\ hyperlinks\).workflow ~/Library/Services/  
+cp -r service/Open\ with\ Spotify\ \(copy\ link\ address\ for\ hyperlinks\).workflow ~/Library/Services/  
