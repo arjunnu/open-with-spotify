@@ -60,66 +60,56 @@
 				<dict>
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
-input=$1
 pbpaste=`pbpaste`
-keyword=spotify
-schemedurl=
-url=
 
-matches() {
+_matches() {
     input="$1"
     pattern="$2"
-    echo "$input" | grep -q "$pattern"
+    echo "$input" | grep -qE "$pattern"
 }
 
-if matches $input $keyword
-then
-        url=$input
-elif matches $pbpaste $keyword
-then
-        url=$pbpaste
-else
-        osascript -e "display dialog \"Spotify url not found. \nFor hyperlinks, please Copy Link Address and then proceed.\""
-		exit 0;
-fi
+# open url in spotify
+_openInSpotify() {
+    declare -r url=$1
+    IFS='\/' read -r -a urlComponents &lt;&lt;&lt; "$url"
+    _runSpotOsaScript spotify:`tr " " ":" &lt;&lt;&lt; ${urlComponents[@]:3}`
+}
 
-IFS='\/ ' read -r -a array &lt;&lt;&lt; "$url";
-i=0;
-foundCom=0;
-arrLen=${#array[@]}
-word=com
-while [ $i != $arrLen ]
-do
-        if [ "${array[$i]#*$word}" != "${array[$i]}" ]
-        then
-                foundCom=1;
-                i=`expr $i + 1`;
-        fi
-        if [ $foundCom -eq 0 ]
-        then
-                #echo "display dialog \"Not printing ${array[i]}\"";
-                i=`expr $i + 1`;
-                continue;
-        else
-                schemedurl="$schemedurl:${array[$i]}"
-                #echo "display dialog \"Printing ${array[i]}\"";
-                i=`expr $i + 1`;
-        fi
-done
-FINSTR=spotify$schemedurl
+# search for input string in spotify app
+_searchInSpotify() {
+    _runSpotOsaScript $@
+}
 
-osascript&lt;&lt;EOF
+# meat of the script
+# use apple script to put a string in spotify app search box
+_runSpotOsaScript() {
+    osascript&lt;&lt;EOF
 tell application "spotify" to activate
+delay 0.5
 tell application "System Events"
- keystroke "l" using command down
- keystroke "a" using command down
- keystroke ascii character 8
- delay 0.1
- keystroke "$FINSTR"
- keystroke return
+  keystroke "l" using command down
+  keystroke "a" using command down
+  keystroke ascii character 8
+  delay 0.2
+  keystroke "$*"
+  keystroke return
 end tell
+EOF
+}
 
-EOF</string>
+# if input is a url open it in spotify app. If not, search for input in spotify
+if _matches $1 "^http[s]?://.*\.spotify\..*"
+then
+#osascript -e "display dialog \"URL matched\""
+    _openInSpotify $1
+elif _matches $pbpaste "^http[s]?://.*\.spotify\..*"
+then
+#osascript -e "display dialog \"URL from pbpaste\""
+    _openInSpotify $pbpaste
+else
+#	osascript -e "Using search string"
+    _searchInSpotify "$*"
+fi</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -232,7 +222,7 @@ EOF</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>309.500000:498.000000</string>
+				<string>309.500000:459.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
