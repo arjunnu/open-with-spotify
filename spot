@@ -41,7 +41,8 @@ _matches() {
 # open url in spotify
 _openInSpotify() {
     declare -r url=$1
-    IFS='\/' read -r -a urlComponents <<< "$url"
+    IFS='\?' read -r -a filterQueryParams <<< "$url"
+    IFS='\/' read -r -a urlComponents <<< "${filterQueryParams[@]:0:1}"
     _runSpotOsaScript spotify:`tr " " ":" <<< ${urlComponents[@]:3}`
 }
 
